@@ -1,0 +1,16 @@
+{
+    "name": "minasm/carbon-uk",
+    "description": "A basic wrapper for citco/carbon which returns business days between two given dates.",
+    "keywords": ["british","england","wales","bank","holiday","holidays","business days"],
+    "license": "MIT",
+    "type": "library",
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "citco/carbon": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "minasm\\": "src/"
+        }
+    }
+}
