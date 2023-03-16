@@ -26,7 +26,7 @@ $endDate = '31/03/2023';
 
 $businessDays = (new Carbon())->getBusinessDays($startDate, $endDate);
 
-echo "There are $businessDays business days between $startDate and $endDate.";
+echo "There are {$businessDays} business days between {$startDate} and {$endDate}";
 
 ```
 
