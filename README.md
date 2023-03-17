@@ -9,7 +9,7 @@ Installation
 To install Minasm/Carbon, simply require it using [Composer](https://getcomposer.org/):
 
 ```
-composer require minasm/carbon
+composer require minasm/carbon-uk
 
 ```
 
