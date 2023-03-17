@@ -12,7 +12,7 @@
             $endDate = DateTime::createFromFormat($format, $end);
             $interval = new DateInterval('P1D');
             $dateRange = new DatePeriod($startDate, $interval, $endDate->add($interval)); 
-            $holidays = array_keys((new Carbon())->getBankHolidays([new Carbon($start),new Carbon($end)]));
+            $holidays = array_keys((new Carbon())->getBankHolidays([new Carbon($startDate),new Carbon($endDate)]));
             
             $businessDays = 0;
             foreach ($dateRange as $date) {                
