@@ -49,4 +49,15 @@ class CarbonTest extends TestCase
         $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
         $this->assertEquals(5, $businessDays);
     }
+
+    /** @test **/
+    public function it_returns_one_day_for_same_day()
+    {
+        $carbon = new Carbon();
+        $startDate = '2023-03-23';
+        $endDate = '2023-03-23';
+        $format = 'Y-m-d';
+        $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
+        $this->assertEquals(1, $businessDays);
+    }    
 }
