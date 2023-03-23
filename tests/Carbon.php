@@ -51,7 +51,7 @@ class CarbonTest extends TestCase
     }
 
     /** @test **/
-    public function it_returns_one_day_for_same_day()
+    public function it_returns_one_day()
     {
         $carbon = new Carbon();
         $startDate = '2023-03-23';
@@ -59,5 +59,16 @@ class CarbonTest extends TestCase
         $format = 'Y-m-d';
         $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
         $this->assertEquals(1, $businessDays);
-    }    
+    }
+
+    /** @test **/
+    public function it_handles_same_date_when_hours_provided()
+    {
+        $carbon = new Carbon();
+        $startDate = '2023-03-23 08:00:00';
+        $endDate = '2023-03-23 17:00:00';
+        $format = 'Y-m-d H:i:s';
+        $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
+        $this->assertEquals(1, $businessDays);
+    }
 }
