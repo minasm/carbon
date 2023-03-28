@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class CarbonTest extends TestCase
 {
+
     /** @test **/
     public function getBusinessDaysWithValidDates()
     {
@@ -61,7 +62,6 @@ class CarbonTest extends TestCase
         $this->assertEquals(1, $businessDays);
     }
 
-    /** @test **/
     public function it_handles_same_date_when_hours_provided()
     {
         $carbon = new Carbon();
@@ -70,5 +70,36 @@ class CarbonTest extends TestCase
         $format = 'Y-m-d H:i:s';
         $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
         $this->assertEquals(1, $businessDays);
+    }
+
+    /** @test **/
+    public function it_should_return_0()
+    {
+        $carbon = new Carbon();
+        $startDate = '2023-05-01 00:00:00';
+        $endDate = '2023-05-01 00:00:00';
+        $format = 'Y-m-d H:i:s';
+        $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
+        $this->assertEquals(0, $businessDays);
+    }
+    /** @test **/
+    public function it_should_return_1()
+    {
+        $carbon = new Carbon();
+        $startDate = '2023-05-02 00:00:00';
+        $endDate = '2023-05-02 00:00:00';
+        $format = 'Y-m-d H:i:s';
+        $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
+        $this->assertEquals(1, $businessDays);
+    }
+    /** @test **/
+    public function it_should_return_2()
+    {
+        $carbon = new Carbon();
+        $startDate = '2023-05-01 00:00:00';
+        $endDate = '2023-05-03 00:00:00';
+        $format = 'Y-m-d H:i:s';
+        $businessDays = $carbon->getBusinessDays($startDate, $endDate, $format);
+        $this->assertEquals(2, $businessDays);
     }
 }
