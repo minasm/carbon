@@ -7,50 +7,72 @@ use DatePeriod;
 use DateTime;
 use Exception;
 
+/**
+ * Class Carbon
+ */
 class Carbon extends \Citco\Carbon
 {
-    private static $cachedBusinessDays = [];
+    /**
+     * @var array<string, int>
+     */
+    private static array $cachedBusinessDays = [];
 
-    public function getBusinessDays($start, $end, string $format = 'd/m/Y', string $country = 'UK'): int
+    /**
+     * Get the number of business days between two dates.
+     *
+     * @param  DateTime|string  $start  The start date.
+     * @param  DateTime|string  $end  The end date.
+     * @param  string  $format  The format of the dates.
+     * @param  string  $country  The country to use for holidays (not implemented).
+     * @return int The number of business days.
+     *
+     * @throws Exception If the date format is invalid.
+     */
+    public function getBusinessDays(string|DateTime $start, string|DateTime $end, string $format = 'd/m/Y', string $country = 'UK'): int
     {
-        //convert to DateTime if string date received other wise clone datetime object to make input immutable
-        $startDate = $start instanceof DateTime ? (clone $start) :
-            DateTime::createFromFormat($format, $start);
-        $endDate = $end instanceof DateTime ? clone $end : DateTime::createFromFormat($format, $end);
+        // Convert to DateTime if string date received otherwise clone DateTime object to make input immutable.
+        $startDate = $start instanceof DateTime ? clone $start : DateTime::createFromFormat($format, (string) $start);
+        $endDate = $end instanceof DateTime ? clone $end : DateTime::createFromFormat($format, (string) $end);
 
-        if (! $startDate) {
+        if ($startDate === false) {
             throw new Exception('Invalid start date format. Please use the format matching your date. Default format is : '.$format);
         }
         if (! $endDate) {
             throw new Exception('Invalid start date format. Please use the format matching your date. Default format is : '.$format);
         }
-        $startDate=$startDate->setTime(0, 0, 0);
-        $endDate=$endDate->setTime(23, 59, 59);
+        $startDate = $startDate->setTime(0, 0, 0);
+        $endDate = $endDate->setTime(23, 59, 59);
 
-        //initialize cache as array
+        //initialise cache as an array
         if (empty(self::$cachedBusinessDays)) {
             self::$cachedBusinessDays = [];
         }
 
-        //create cache key
+        //create a cache key
         $cacheKey = $startDate->format('Y-m-d').$endDate->format('Y-m-d');
 
-        //if same interval requested again resturn from cache instead
+        //if the same interval requested again resturn from cache instead
         if (array_key_exists($cacheKey, self::$cachedBusinessDays)) {
             return self::$cachedBusinessDays[$cacheKey];
         }
 
         $interval = new DateInterval('P1D');
 
-        $dateRange = new DatePeriod(  $startDate, $interval, (clone $endDate));
-        $holidays = array_keys((new Carbon())->getBankHolidays([new Carbon($startDate), new Carbon($endDate)]));
+        $dateRange = new DatePeriod($startDate, $interval, (clone $endDate));
+        $holidays = array_keys((new Carbon)->getBankHolidays([new Carbon($startDate), new Carbon($endDate)]));
 
-        $holidays = array_map(function ($item) use ($format) {
-            return DateTime::createFromFormat('Y-m-d', $item)->format('Y-m-d');
+        $holidays = array_map(function (int|string $item): string {
+            $date = DateTime::createFromFormat('Y-m-d', (string) $item);
+
+            return $date ? $date->format('Y-m-d') : '';
         }, $holidays);
+
+        // Filter out any potentially empty string elements resulting from the map function
+        $holidays = array_filter($holidays, fn ($date) => $date !== '');
+
         self::$cachedBusinessDays[$cacheKey] = 0;
-         foreach ($dateRange as $date) {
-            if ($date->format('N') < 6 && ! in_array($date->format('Y-m-d'), $holidays)) {
+        foreach ($dateRange as $date) {
+            if ($date->format('N') < 6 && ! in_array($date->format('Y-m-d'), $holidays, true)) {
                 self::$cachedBusinessDays[$cacheKey]++;
             }
         }

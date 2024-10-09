@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true">
+<phpunit
+        testdox="false"
+        bootstrap="vendor/autoload.php"
+        backupGlobals="false"
+        colors="true"
+        displayDetailsOnTestsThatTriggerDeprecations="true"
+        processIsolation="false"
+        stopOnFailure="false"
+        failOnDeprecation="true"
+        failOnNotice="true">
+    <source>
+        <include>
+            <directory suffix=".php">src/</directory>
+        </include>
+    </source>
     <testsuites>
         <testsuite name="Carbon UK Tests">
-             <directory suffix=".php">./tests/</directory>
+             <directory suffix=".php">tests/</directory>
         </testsuite>
     </testsuites>
 
